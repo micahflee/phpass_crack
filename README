@@ -1,0 +1,61 @@
+[-----------------------]
+| What is phpass_crack? |
+[-----------------------]
+phpass_crack is a password cracker for Portable PHP password hashes,
+which are used by Wordpress and other web apps to hash passwords. See 
+http://www.openwall.com/phpass/ for more information on Portable PHP
+hashes.
+
+I used the python module by Alexander Chemeris, from
+http://www.openwall.com/phpass/contrib/phpass-python-0.1.tar.gz. I
+modified it slightly to use the hashlib python library instead of the
+depreciated md5 one it was using.
+
+[----------]
+| Features |
+[----------]
+* Two verbose modes. Without verbosity, only passwords that get cracked
+  will be displayed during cracking. With -v (verbose) each time the
+  program calculates a hash it will display a single dot (.).
+  With -vv (very verbose) each time the program calculates a hash it 
+  will display the password that it's currently working on.
+* Output results to a file with -o. Each time a password is cracked, the
+  results get written to the file live so you can see which passwords
+  have been cracked during a verbose cracking session without closing
+  the program and ending it.
+* Support for multithreading. Defaults to 20 threads. You can specify
+  how many threads you want by using -t number.
+* Ctrl-C will interrupt the program, cleanly close all active threads,
+  and show you the results.
+* Program will stop itself when all hashes in the supplied passwd have
+  been cracked before the end of the wordlist is reached.
+* Displays the total run time when the program finishes running.
+
+[--------------]
+| Requirements |
+[--------------]
+Python 2.x
+
+[------------------]
+| How do I use it? |
+[------------------]
+You need to pipe passwords into phpass_crack.py from another source, and
+supply phpass_crack.py with a passwd file with the phpass hashes. If
+your wordlist is wordlist.txt and your hashes are stored in hashes.txt,
+then you would run this by doing something like:
+
+cat wordlist.txt | python phpass_crack.py hashes.txt -vv -o cracked.txt
+
+Or you can even use John the Ripper to generate your passwords for you,
+if you don't have a good wordlist:
+
+john --incremental --stdout | python phpass_crack.py hashes.txt -vv -o cracked.txt
+
+[------------------------------------------]
+| What format should my passwd file be in? |
+[------------------------------------------]
+Each line should contain a different user/hash combination. For example,
+a passwd file with a single user named "test" with the password
+"letmein" would look like this:
+
+test:$P$BZrfCqm4v6boi6z0L3t8JTycW.zfI61
